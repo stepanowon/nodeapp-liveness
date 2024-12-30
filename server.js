@@ -5,11 +5,19 @@ const port = 8080;
 let startTime;
 
 app.get('/healthz', (req, res) => {
-    let duration = Date.now() - startTime.getTime();
-    if (duration > 30000) {
-        res.status(500).json({ status: "fail", time: duration })
+    const header = req.headers["health-check"];
+    if (header === "check") {
+        let duration = Date.now() - startTime.getTime();
+        if (duration > 30000) {
+            res.status(500).json({
+                status: "fail", 
+                message: "server : not available" 
+            })
+        } else {
+            res.json({ status: "ok", message: "server : available." })
+        }
     } else {
-        res.json({ status: "ok", time: duration })
+        res.json({ status: "ok", message: "server : available." })
     }
 });
 
